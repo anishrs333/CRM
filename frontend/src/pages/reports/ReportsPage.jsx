@@ -12,8 +12,9 @@ import {
   TrendingUp, 
   Target, 
   Users, 
-  DollarSign, 
-  Download
+  IndianRupee, 
+  Download,
+  Building2
 } from 'lucide-react';
 import { exportToCsv } from '../../utils/exportToCsv';
 import './ReportsPage.css';
@@ -142,7 +143,7 @@ export const ReportsPage = () => {
         <DashboardCard
           title="Avg. Deal Size"
           value={formatCurrency(metrics.avgDealSize)}
-          icon={DollarSign}
+          icon={IndianRupee}
           variant="primary"
           trend={metrics.avgDealSize > 0 ? "+0%" : "₹ 0"}
           trendType="positive"

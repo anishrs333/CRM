@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Navbar } from './Navbar';
 import { Breadcrumbs } from './Breadcrumbs';
+import { ErrorBoundary } from '../common/ErrorBoundary';
 import { storage } from '../../utils/storage';
 import './MainLayout.css';
 
@@ -59,7 +60,9 @@ export const MainLayout = () => {
 
         <main className="crm-page-container">
           <Breadcrumbs />
-          <Outlet />
+          <ErrorBoundary>
+            <Outlet />
+          </ErrorBoundary>
         </main>
       </div>
     </div>

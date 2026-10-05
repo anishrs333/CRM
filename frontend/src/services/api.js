@@ -5,7 +5,7 @@ export const isMockEnabled = false;
 export const mockDelay = async (ms = 300) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL,
+    baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
     headers: {
         "Content-Type": "application/json"
     },

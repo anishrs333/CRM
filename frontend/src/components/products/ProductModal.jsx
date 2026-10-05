@@ -3,7 +3,7 @@ import { Modal } from '../modals/Modal';
 import { FormField } from '../forms/FormField';
 import { Button } from '../common/Button';
 import { validators } from '../../utils/validators';
-import { Package, Hash, DollarSign, Percent, Tag } from 'lucide-react';
+import { Package, Hash, IndianRupee, Percent, Tag } from 'lucide-react';
 import './ProductModal.css';
 
 export const ProductModal = ({
@@ -148,7 +148,7 @@ export const ProductModal = ({
             onChange={handleChange}
             error={errors.unitPrice}
             required
-            icon={DollarSign}
+            icon={IndianRupee}
           />
 
           <FormField

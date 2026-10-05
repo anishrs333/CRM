@@ -36,6 +36,20 @@ class Command(BaseCommand):
         admin_user.set_password('admin123')
         admin_user.save()
 
+        crm_admin_user, _ = User.objects.get_or_create(
+            username='crm_admin',
+            defaults={
+                'email': 'crm_admin@plsofttech.com',
+                'first_name': 'CRM',
+                'last_name': 'Admin',
+                'role': 'admin',
+                'is_staff': True,
+                'is_superuser': True,
+            }
+        )
+        crm_admin_user.set_password('admin123')
+        crm_admin_user.save()
+
         manager_user, _ = User.objects.get_or_create(
             username='alex_manager',
             defaults={
@@ -47,6 +61,18 @@ class Command(BaseCommand):
         )
         manager_user.set_password('admin123')
         manager_user.save()
+
+        crm_manager_user, _ = User.objects.get_or_create(
+            username='manager_crm',
+            defaults={
+                'email': 'manager_crm@plsofttech.com',
+                'first_name': 'CRM',
+                'last_name': 'Manager',
+                'role': 'sales_manager',
+            }
+        )
+        crm_manager_user.set_password('admin123')
+        crm_manager_user.save()
 
         rep_user, _ = User.objects.get_or_create(
             username='jessica_sales',

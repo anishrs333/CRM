@@ -3,7 +3,7 @@ import { Modal } from '../modals/Modal';
 import { Button } from '../common/Button';
 import { Badge } from '../common/Badge';
 import { formatCurrency, formatDate, getStatusBadgeVariant } from '../../utils/formatters';
-import { Building2, User, Mail, Phone, DollarSign, MapPin, Briefcase } from 'lucide-react';
+import { Building2, User, Mail, Phone, IndianRupee, MapPin, Briefcase } from 'lucide-react';
 
 export const CustomerDetailsModal = ({ isOpen, onClose, customer, onEdit }) => {
   if (!customer) return null;
@@ -94,7 +94,7 @@ export const CustomerDetailsModal = ({ isOpen, onClose, customer, onEdit }) => {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '0.92rem' }}>
-            <DollarSign size={16} color="var(--text-muted)" />
+            <IndianRupee size={16} color="var(--text-muted)" />
             <span style={{ color: 'var(--text-muted)', width: '130px' }}>Account Value:</span>
             <span style={{ fontWeight: 700, color: 'var(--success-solid)' }}>
               {formatCurrency(customer.dealValue)}

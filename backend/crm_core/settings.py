@@ -49,6 +49,10 @@ INSTALLED_APPS = [
     'apps.tasks',
     'apps.reports',
     'apps.notifications',
+    'apps.students',
+    'apps.learning',
+    'apps.school',
+    'apps.audit',
 ]
 
 MIDDLEWARE = [
@@ -90,7 +94,7 @@ ASGI_APPLICATION = 'crm_core.asgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DB_NAME', 'crm_db'),
+        'NAME': os.getenv('DB_NAME', 'CRM_DB_SUN'),
         'USER': os.getenv('DB_USER', 'root'),
         'PASSWORD': os.getenv('DB_PASSWORD', 'PL@2026'),
         'HOST': os.getenv('DB_HOST', '127.0.0.1'),

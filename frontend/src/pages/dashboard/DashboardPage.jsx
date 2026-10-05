@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useToast } from '../../hooks/useToast';
 import { dashboardService } from '../../services/dashboardService';
+import { studentService } from '../../services/studentService';
 import { formatCurrency, formatTimeAgo, formatDateTime } from '../../utils/formatters';
 import { Button } from '../../components/common/Button';
 import { Badge } from '../../components/common/Badge';
@@ -12,7 +13,7 @@ import {
   Users, 
   Briefcase, 
   Flame, 
-  DollarSign, 
+  IndianRupee, 
   Plus, 
   ArrowRight, 
   Activity,
@@ -20,6 +21,7 @@ import {
   TrendingUp,
   FileText,
   Clock,
+  GraduationCap,
   Target,
   ShieldCheck,
   ChevronRight,
@@ -50,6 +52,7 @@ export const DashboardPage = () => {
   const navigate = useNavigate();
 
   const [summary, setSummary] = useState(null);
+  const [studentStats, setStudentStats] = useState(null);
   const [activities, setActivities] = useState([]);
   const [recentOpportunities, setRecentOpportunities] = useState([]);
   const [pendingFollowUps, setPendingFollowUps] = useState([]);
@@ -61,14 +64,16 @@ export const DashboardPage = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const [sumData, actData, oppData, followData] = await Promise.all([
+      const [sumData, stStats, actData, oppData, followData] = await Promise.all([
         dashboardService.getSummary().catch(() => ({})),
+        studentService.getDashboardStats().catch(() => ({})),
         dashboardService.getRecentActivities().catch(() => []),
         dashboardService.getRecentOpportunities().catch(() => []),
         dashboardService.getPendingFollowUps().catch(() => []),
       ]);
 
       setSummary(sumData && typeof sumData === 'object' ? sumData : {});
+      setStudentStats(stStats && typeof stStats === 'object' ? stStats : {});
       setActivities(Array.isArray(actData) ? actData : []);
       setRecentOpportunities(Array.isArray(oppData) ? oppData : []);
       setPendingFollowUps(Array.isArray(followData) ? followData : []);
@@ -158,8 +163,8 @@ export const DashboardPage = () => {
 
           <p className="hero-subtitle">
             {isAdmin 
-              ? 'Administrator Overview — Full visibility across Revenue Pipeline, Client Accounts, Quotations & Operations.'
-              : 'Sales Manager Deck — Real-time performance telemetry, deal velocity, and team execution queue.'}
+              ? 'Tech Academy Command Center — Full visibility across Ongoing Trainees, Placement Rates, Fee Collections & Courses.'
+              : 'Academic Operations Deck — Real-time student progress telemetry, course durations, and placement drives.'}
           </p>
         </div>
 
@@ -170,316 +175,213 @@ export const DashboardPage = () => {
               variant="primary"
               size="md"
               icon={Plus}
-              onClick={() => navigate('/leads')}
+              onClick={() => navigate('/students')}
             >
-              Add New Lead
+              Enroll Student
             </Button>
             <Button
               variant="outline"
               size="md"
-              icon={FileText}
-              onClick={() => navigate('/quotations')}
+              icon={GraduationCap}
+              onClick={() => navigate('/courses')}
             >
-              Create Quote
+              Course Catalog
             </Button>
           </div>
         </div>
       </header>
 
       {/* =================================================================
-          2. TOP 4 EXECUTIVE TELEMETRY KPI CARDS
+          2. TOP EXECUTIVE TELEMETRY KPI CARDS (INSTITUTE METRICS)
          ================================================================= */}
       <section className="executive-kpi-grid">
-        {/* KPI 1: Active Pipeline */}
-        <div className="kpi-card crimson-accent">
+        {/* KPI 1: Ongoing Trainees */}
+        <div className="kpi-card crimson-accent" style={{ cursor: 'pointer' }} onClick={() => navigate('/ongoing-students')}>
           <div className="kpi-top-row">
-            <span className="kpi-label">Active Pipeline Value</span>
+            <span className="kpi-label">Ongoing Trainees</span>
             <div className="kpi-icon-box crimson">
-              <TrendingUp size={20} />
+              <Clock size={20} />
             </div>
           </div>
           <div className="kpi-val-row">
-            <h2 className="kpi-value">{isLoading ? <Skeleton width="120px" height="28px" /> : formatCurrency(totalPipelineVal)}</h2>
+            <h2 className="kpi-value">{isLoading ? <Skeleton width="80px" height="28px" /> : `${studentStats?.ongoing_count ?? 0} Active`}</h2>
             <span className="kpi-trend positive">
-              <ArrowUpRight size={14} /> +14.2%
+              <ArrowUpRight size={14} /> Active
             </span>
           </div>
-          <p className="kpi-footer-text">Total value across active sales stages</p>
+          <p className="kpi-footer-text">Students in active training allocation</p>
         </div>
 
-        {/* KPI 2: Closed Won Revenue */}
-        <div className="kpi-card gold-accent">
+        {/* KPI 2: Finishing Soon Alert (≤ 10 Days Left) */}
+        <div className="kpi-card amber-accent" style={{ cursor: 'pointer' }} onClick={() => navigate('/ongoing-students')}>
           <div className="kpi-top-row">
-            <span className="kpi-label">Closed Won Revenue</span>
-            <div className="kpi-icon-box green">
-              <Trophy size={20} />
-            </div>
-          </div>
-          <div className="kpi-val-row">
-            <h2 className="kpi-value">{isLoading ? <Skeleton width="120px" height="28px" /> : formatCurrency(wonVal)}</h2>
-            <span className="kpi-trend positive">
-              <ArrowUpRight size={14} /> +22.5%
-            </span>
-          </div>
-          <p className="kpi-footer-text">Successfully converted deal value</p>
-        </div>
-
-        {/* KPI 3: Total Opportunities */}
-        <div className="kpi-card beige-accent">
-          <div className="kpi-top-row">
-            <span className="kpi-label">Active Opportunities</span>
-            <div className="kpi-icon-box purple">
-              <Layers size={20} />
-            </div>
-          </div>
-          <div className="kpi-val-row">
-            <h2 className="kpi-value">{isLoading ? <Skeleton width="60px" height="28px" /> : `${totalLeadsCount} Deals`}</h2>
-            <span className="kpi-badge-pill">{winRatePercent}% Win Rate</span>
-          </div>
-          <p className="kpi-footer-text">Deals progressing in active pipeline</p>
-        </div>
-
-        {/* KPI 4: Pending Follow-ups */}
-        <div className="kpi-card amber-accent">
-          <div className="kpi-top-row">
-            <span className="kpi-label">Pending Client Touchpoints</span>
+            <span className="kpi-label">Finishing Soon (≤ 10d Left)</span>
             <div className="kpi-icon-box amber">
-              <PhoneCall size={20} />
+              <Zap size={20} />
             </div>
           </div>
           <div className="kpi-val-row">
-            <h2 className="kpi-value">{isLoading ? <Skeleton width="40px" height="28px" /> : `${activeFollowUps.length} Due`}</h2>
+            <h2 className="kpi-value">{isLoading ? <Skeleton width="80px" height="28px" /> : `${studentStats?.finishing_soon_count ?? 0} Students`}</h2>
             <span className="kpi-urgent-pill">Action Required</span>
           </div>
-          <p className="kpi-footer-text">Scheduled calls and client meetings today</p>
+          <p className="kpi-footer-text">Identify & mark completed soon</p>
+        </div>
+
+        {/* KPI 3: Completed Students */}
+        <div className="kpi-card gold-accent" style={{ cursor: 'pointer' }} onClick={() => navigate('/completed-students')}>
+          <div className="kpi-top-row">
+            <span className="kpi-label">Course Completed</span>
+            <div className="kpi-icon-box green">
+              <Award size={20} />
+            </div>
+          </div>
+          <div className="kpi-val-row">
+            <h2 className="kpi-value">{isLoading ? <Skeleton width="80px" height="28px" /> : `${studentStats?.completed_count ?? 0} Students`}</h2>
+            <span className="kpi-badge-pill">Ready for Drives</span>
+          </div>
+          <p className="kpi-footer-text">Finished duration & awaiting placement</p>
+        </div>
+
+        {/* KPI 4: Placed Students */}
+        <div className="kpi-card beige-accent" style={{ cursor: 'pointer' }} onClick={() => navigate('/placed-students')}>
+          <div className="kpi-top-row">
+            <span className="kpi-label">Placed Candidates</span>
+            <div className="kpi-icon-box purple">
+              <Briefcase size={20} />
+            </div>
+          </div>
+          <div className="kpi-val-row">
+            <h2 className="kpi-value">{isLoading ? <Skeleton width="80px" height="28px" /> : `${studentStats?.placed_count ?? 0} Placed`}</h2>
+            <span className="kpi-badge-pill">{studentStats?.placement_rate ?? 0}% Rate</span>
+          </div>
+          <p className="kpi-footer-text">Hired by partner corporate recruiters</p>
         </div>
       </section>
 
       {/* =================================================================
-          3. MIDDLE OPERATIONS DECK (60% Revenue Analytics / 40% Action Queue)
+          3. FINISHING SOON ALERT WIDGET & INSTANT ACTION QUEUE
          ================================================================= */}
       <section className="operations-split-grid">
-        {/* Left Wing (60%): Revenue Stage Analytics & Deal Velocity */}
+        {/* Left Wing (60%): Students Finishing Soon Widget (≤ 10 Days Remaining) */}
         <div className="op-panel op-panel-main">
           <div className="op-panel-header">
             <div>
-              <h2 className="op-panel-title">
-                <BarChart3 size={18} className="panel-title-icon" />
-                Pipeline Stage Breakdown & Deal Velocity
+              <h2 className="op-panel-title" style={{ color: '#d97706' }}>
+                <Zap size={18} className="panel-title-icon" color="#d97706" />
+                Finishing Soon Alert Queue (≤ 10 Days Left)
               </h2>
-              <p className="op-panel-sub">Stage distribution of active deal volume and conversion metrics</p>
+              <p className="op-panel-sub">Students reaching their training end date. Review and mark completed or extend duration.</p>
             </div>
             <Button
               variant="ghost"
               size="sm"
               icon={ArrowRight}
-              onClick={() => navigate('/opportunities')}
+              onClick={() => navigate('/ongoing-students')}
             >
-              View Pipeline
+              View Ongoing Tracker
             </Button>
           </div>
 
-          {/* Stage Progress Bars */}
-          <div className="stage-analytics-container">
-            {stagesBreakdown.map((stg) => (
-              <div key={stg.label} className="stage-row-item">
-                <div className="stage-row-top">
-                  <div className="stage-name-box">
-                    <span className="stage-dot" style={{ backgroundColor: stg.color }} />
-                    <span className="stage-name">{stg.label}</span>
-                    <span className="stage-count">({stg.count} deals)</span>
-                  </div>
-                  <div className="stage-val-box">
-                    <span className="stage-amount">{formatCurrency(stg.value)}</span>
-                    <span className="stage-percent">{stg.percent}%</span>
-                  </div>
+          <div className="high-deals-list">
+            {isLoading ? (
+              Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="high-deal-skeleton">
+                  <Skeleton width="40%" height="16px" />
+                  <Skeleton width="20%" height="16px" />
                 </div>
-
-                <div className="stage-progress-track">
-                  <div 
-                    className="stage-progress-fill" 
-                    style={{ width: `${stg.percent}%`, backgroundColor: stg.color }} 
-                  />
-                </div>
+              ))
+            ) : (studentStats?.finishing_soon_students || []).length === 0 ? (
+              <div className="empty-deals-box" style={{ padding: '32px', textAlign: 'center' }}>
+                <CheckCircle2 size={36} color="#16a34a" style={{ margin: '0 auto 8px' }} />
+                <h4 style={{ fontSize: '15px', fontWeight: 600, color: '#1e293b' }}>No Urgent Completions Pending</h4>
+                <p style={{ fontSize: '13px', color: '#64748b' }}>All ongoing trainees have more than 10 days remaining in their duration allocation.</p>
               </div>
-            ))}
-          </div>
-
-          {/* High-Value Opportunities Snapshot */}
-          <div className="high-deals-section">
-            <div className="high-deals-header">
-              <h3>Recent Priority Opportunities</h3>
-              <span className="high-deals-count">{recentOpportunities.length} Recent Deals</span>
-            </div>
-
-            <div className="high-deals-list">
-              {isLoading ? (
-                Array.from({ length: 3 }).map((_, i) => (
-                  <div key={i} className="high-deal-skeleton">
-                    <Skeleton width="40%" height="16px" />
-                    <Skeleton width="20%" height="16px" />
+            ) : (
+              (studentStats?.finishing_soon_students || []).map((std) => (
+                <div key={std.id} className="high-deal-card" style={{ borderLeft: '4px solid #f59e0b' }}>
+                  <div className="deal-info-col">
+                    <h4 className="deal-title">{std.full_name}</h4>
+                    <span className="deal-client">{std.enrollment_id} • {std.course_title}</span>
                   </div>
-                ))
-              ) : recentOpportunities.length === 0 ? (
-                <div className="empty-deals-box">
-                  <p>No active opportunities recorded yet.</p>
+
+                  <div className="deal-stage-badge" style={{ background: '#fef3c7', color: '#92400e' }}>
+                    <Clock size={12} />
+                    {std.days_remaining === 0 ? '✓ Time Finished Today' : `${std.days_remaining} Days Left`}
+                  </div>
+
+                  <div className="deal-val-col">
+                    <span className="deal-amount" style={{ fontSize: '13px' }}>Day {std.days_elapsed} of {std.total_duration_days}</span>
+                    <span className="deal-prob">Ends {std.expected_end_date}</span>
+                  </div>
+
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={async (e) => {
+                      e.stopPropagation();
+                      try {
+                        await studentService.updateStudent(std.id, { status: 'completed' });
+                        showToast(`🏆 ${std.full_name} marked as Course Completed!`, 'success');
+                        fetchDashboardData();
+                      } catch (err) {
+                        showToast(err.message || 'Failed to update status.', 'error');
+                      }
+                    }}
+                  >
+                    Mark Completed
+                  </Button>
                 </div>
-              ) : (
-                recentOpportunities.slice(0, 4).map((opp) => (
-                  <div key={opp.id} className="high-deal-card" onClick={() => navigate('/opportunities')}>
-                    <div className="deal-info-col">
-                      <h4 className="deal-title">{opp.title}</h4>
-                      <span className="deal-client">{opp.customerName || opp.clientName || 'Client Record'}</span>
-                    </div>
-
-                    <div className="deal-stage-badge">
-                      <span className="badge-dot" />
-                      {opp.stage || 'Proposal Presented'}
-                    </div>
-
-                    <div className="deal-val-col">
-                      <span className="deal-amount">{formatCurrency(opp.dealValue || opp.amount || 150000)}</span>
-                      <span className="deal-prob">{opp.probability || 75}% Probability</span>
-                    </div>
-
-                    <button type="button" className="deal-arrow-btn" title="View Opportunity Details">
-                      <ChevronRight size={16} />
-                    </button>
-                  </div>
-                ))
-              )}
-            </div>
+              ))
+            )}
           </div>
         </div>
 
-        {/* Right Wing (40%): Client Execution Queue */}
+        {/* Right Wing (40%): Fee Revenue & Financial Quick Snapshot */}
         <div className="op-panel op-panel-side">
           <div className="op-panel-header">
             <div>
               <h2 className="op-panel-title">
-                <Clock size={18} className="panel-title-icon" />
-                Today's Client Execution Queue
+                <IndianRupee size={18} className="panel-title-icon" />
+                Fee Ledger & Dues Summary
               </h2>
-              <p className="op-panel-sub">Callbacks, prospect meetings, and action items</p>
+              <p className="op-panel-sub">Collected course fees and outstanding balances</p>
             </div>
-            <Badge variant="warning">{activeFollowUps.length} Due</Badge>
+            <Button
+              variant="ghost"
+              size="sm"
+              icon={ArrowRight}
+              onClick={() => navigate('/student-payments')}
+            >
+              Fee Receipts
+            </Button>
           </div>
 
-          <div className="client-queue-list">
-            {activeFollowUps.length === 0 ? (
-              <div className="queue-empty-box">
-                <CheckCircle2 size={40} color="var(--primary-600)" />
-                <h4>All Done For Today!</h4>
-                <p>No pending client touchpoints scheduled for today.</p>
-              </div>
-            ) : (
-              activeFollowUps.map((item) => (
-                <div key={item.id} className="queue-item-card">
-                  <div className="queue-item-icon">
-                    {item.type === 'Call' && <Phone size={15} />}
-                    {item.type === 'Email' && <Mail size={15} />}
-                    {item.type !== 'Call' && item.type !== 'Email' && <Clock size={15} />}
-                  </div>
-
-                  <div className="queue-item-content">
-                    <div className="queue-item-top">
-                      <span className="queue-client-name">{item.entityName}</span>
-                      <span className="queue-time-chip">
-                        <Clock size={11} /> {formatDateTime(item.scheduledDate)}
-                      </span>
-                    </div>
-                    <div className="queue-title">{item.title}</div>
-                    <div className="queue-meta">
-                      Contact: <strong>{item.contactPerson}</strong> • Assigned: {item.assignedTo}
-                    </div>
-                  </div>
-
-                  <div className="queue-item-actions">
-                    <button
-                      type="button"
-                      className="queue-btn-done"
-                      onClick={() => handleCompleteFollowUp(item.id, item.title)}
-                      title="Mark Touchpoint Completed"
-                    >
-                      <Check size={14} /> Done
-                    </button>
-                    <button
-                      type="button"
-                      className="queue-btn-trigger"
-                      onClick={() => {
-                        showToast(`Initiating contact with ${item.contactPerson}...`, 'info', 2000);
-                      }}
-                      title="Direct Action Trigger"
-                    >
-                      {item.type === 'Call' ? <Phone size={13} /> : <Mail size={13} />}
-                      {item.type === 'Call' ? 'Call' : 'Email'}
-                    </button>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* =================================================================
-          4. BOTTOM INTELLIGENCE GRID: AUDIT TICKER & TARGET PROGRESS
-         ================================================================= */}
-      <section className="intelligence-grid">
-        {/* Real-time System Audit Stream */}
-        <div className="intel-card audit-feed-card">
-          <div className="intel-card-header">
-            <div>
-              <h3>Real-Time System Audit</h3>
-              <p>Live stream of client interactions and record updates</p>
-            </div>
-            <span className="live-status-pill">
-              <span className="live-dot" /> Live
-            </span>
-          </div>
-
-          <div className="audit-stream">
-            {activities.length === 0 ? (
-              <div className="audit-empty">No activity records logged recently.</div>
-            ) : (
-              activities.slice(0, 4).map((act) => (
-                <div key={act.id} className="audit-row">
-                  <div className="audit-dot" />
-                  <div className="audit-text">
-                    <strong>{act.user}</strong> {act.action}{' '}
-                    <span className="audit-target">{act.target}</span>
-                  </div>
-                  <span className="audit-time">{formatTimeAgo(act.timestamp)}</span>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* Quota Progress Gauge */}
-        <div className="intel-card target-gauge-card">
-          <div className="intel-card-header">
-            <div>
-              <h3>Annual Target & Quota Progress</h3>
-              <p>Team progress towards FY2026 revenue target</p>
-            </div>
-            <Target size={18} color="var(--primary-600)" />
-          </div>
-
-          <div className="quota-gauge-box">
-            <div className="quota-gauge-top">
-              <span className="quota-current-val">{formatCurrency(totalPipelineVal)}</span>
-              <span className="quota-target-val">Target: ₹ 50,00,000</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '16px' }}>
+            <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+              <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 600 }}>Total Fee Revenue Collected</span>
+              <h2 style={{ fontSize: '24px', fontWeight: 800, color: '#16a34a', margin: '4px 0' }}>
+                {formatCurrency(studentStats?.total_revenue ?? 0)}
+              </h2>
+              <span style={{ fontSize: '12px', color: '#059669' }}>✓ Verified Installments Logged</span>
             </div>
 
-            <div className="quota-progress-bar">
-              <div className="quota-progress-fill" style={{ width: `${quotaPercent}%` }} />
+            <div style={{ background: '#fff7ed', padding: '16px', borderRadius: '12px', border: '1px solid #ffedd5' }}>
+              <span style={{ fontSize: '12px', color: '#c2410c', fontWeight: 600 }}>Outstanding Balance Dues</span>
+              <h2 style={{ fontSize: '24px', fontWeight: 800, color: '#ea580c', margin: '4px 0' }}>
+                {formatCurrency(studentStats?.pending_dues ?? 0)}
+              </h2>
+              <span style={{ fontSize: '12px', color: '#c2410c' }}>Installment Collections Pending</span>
             </div>
 
-            <div className="quota-gauge-bottom">
-              <span className="quota-percent-label">{quotaPercent}% Achieved</span>
-              <span className="quota-remaining-label">{formatCurrency(quotaRemaining)} Remaining</span>
-            </div>
+            <Button
+              variant="primary"
+              size="md"
+              icon={FileText}
+              style={{ width: '100%', justifyContent: 'center' }}
+              onClick={() => navigate('/student-payments')}
+            >
+              Download PDF Statements & Receipts
+            </Button>
           </div>
         </div>
       </section>

@@ -4,15 +4,32 @@ import { ChevronRight, Home } from 'lucide-react';
 import './Breadcrumbs.css';
 
 const routeNameMap = {
-  dashboard: 'Dashboard',
-  users: 'Users',
-  customers: 'Customers',
-  leads: 'Leads',
-  tasks: 'Tasks',
-  reports: 'Reports',
-  settings: 'Settings',
-  add: 'Add New',
-  edit: 'Edit',
+  dashboard: 'Executive Dashboard',
+  certificates: 'Certificates Roster',
+  students: 'All Students Registry',
+  'ongoing-students': 'Ongoing Trainee Tracker',
+  'completed-students': 'Course Completed Students',
+  'placed-students': 'Placed Students & Drives',
+  'student-payments': 'Fee Receipts & Statements',
+  courses: 'Courses & Curriculum',
+  companies: 'Corporate Hiring Partners',
+  'learning-paths': 'Learning Paths',
+  'student-performance': 'Student Performance',
+  'live-classes': 'Live Classes',
+  'jobs-and-internships': 'Jobs & Internships',
+  school: 'School Workspace',
+  admissions: 'School Admissions',
+  'academic-years': 'Academic Years',
+  classes: 'Classes & Sections',
+  subjects: 'School Subjects',
+  timetable: 'Timetable Scheduler',
+
+  assignments: 'Homework & Assignments',
+  exams: 'Exams & Results',
+  parents: 'Parents & Guardians',
+  fees: 'School Fee Management',
+  'audit-logs': 'Audit & Security Logs',
+  settings: 'Institute Settings',
 };
 
 export const Breadcrumbs = () => {

@@ -4,7 +4,7 @@ import { FormField } from '../forms/FormField';
 import { Button } from '../common/Button';
 import { userService } from '../../services/userService';
 import { validators } from '../../utils/validators';
-import { Building2, User, Mail, Phone, DollarSign, Target, Award } from 'lucide-react';
+import { Building2, User, Mail, Phone, IndianRupee, Target, Award } from 'lucide-react';
 
 export const LeadModal = ({
   isOpen,
@@ -227,7 +227,7 @@ export const LeadModal = ({
             value={formData.estimatedValue}
             onChange={handleChange}
             error={errors.estimatedValue}
-            icon={DollarSign}
+            icon={IndianRupee}
           />
 
           <FormField

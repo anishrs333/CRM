@@ -1,22 +1,28 @@
 import React from 'react';
-import { NavLink, useLocation, Link } from 'react-router-dom';
+import { NavLink, useLocation, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { getInitials } from '../../utils/formatters';
+import { useWorkspace } from '../../context/WorkspaceContext';
 import { 
   Building2, 
   LayoutDashboard, 
+  GraduationCap,
   Users, 
   Briefcase, 
-  Flame, 
-  TrendingUp, 
-  PhoneCall, 
-  FileText, 
   Package, 
-  CheckSquare, 
-  BarChart3, 
-  ShieldCheck, 
   Settings,
-  X
+  Clock,
+  Award,
+  IndianRupee,
+  School,
+  BookOpen,
+  Calendar,
+  FileText,
+  ShieldCheck,
+  Layers,
+  Sparkles,
+  ClipboardList,
+  Cpu,
+  Laptop
 } from 'lucide-react';
 import './Sidebar.css';
 
@@ -27,78 +33,106 @@ export const Sidebar = ({
 }) => {
   const { user } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+  const { workspace, setWorkspace } = useWorkspace();
 
-  const navigationSections = [
+  const techAcademySections = [
     {
-      title: 'Main Menu',
+      title: 'TECH ACADEMY COMMAND',
       items: [
         {
-          label: 'Dashboard',
+          label: 'Executive Dashboard',
           path: '/dashboard',
           icon: LayoutDashboard,
           exact: true,
         },
         {
-          label: 'Leads',
-          path: '/leads',
-          icon: Flame,
-          badge: 'Hot',
+          label: 'Ongoing Trainee Tracker',
+          path: '/ongoing-students',
+          icon: Clock,
+          badge: 'Active',
           badgeClass: 'badge-primary',
         },
         {
-          label: 'Follow-ups',
-          path: '/follow-ups',
-          icon: PhoneCall,
+          label: 'Course Completed List',
+          path: '/completed-students',
+          icon: Award,
+          badge: 'Completed',
+          badgeClass: 'badge-success',
         },
         {
-          label: 'Opportunities',
-          path: '/opportunities',
-          icon: TrendingUp,
+          label: 'Placed Students & Drives',
+          path: '/placed-students',
+          icon: Briefcase,
+          badge: 'Placed',
+          badgeClass: 'badge-warning',
         },
         {
-          label: 'Quotations',
-          path: '/quotations',
-          icon: FileText,
+          label: 'Fee Receipts & Statements',
+          path: '/student-payments',
+          icon: IndianRupee,
           badge: 'PDF',
           badgeClass: 'badge-primary',
         },
         {
-          label: 'Customers',
-          path: '/customers',
+          label: 'Trainee Registry',
+          path: '/students',
+          icon: GraduationCap,
+        },
+      ],
+    },
+    {
+      title: 'LEARNING & PLACEMENTS',
+      items: [
+        {
+          label: 'Learning Paths',
+          path: '/learning-paths',
+          icon: Layers,
+        },
+        {
+          label: 'Student Performance',
+          path: '/student-performance',
+          icon: Sparkles,
+        },
+        {
+          label: 'Live Classes & Sessions',
+          path: '/live-classes',
+          icon: BookOpen,
+        },
+        {
+          label: 'Jobs & Internships',
+          path: '/jobs-and-internships',
           icon: Briefcase,
         },
       ],
     },
     {
-      title: 'Operations',
+      title: 'CURRICULUM & RECRUITERS',
       items: [
         {
-          label: 'Products & Services',
-          path: '/products',
+          label: 'Certificates Roster',
+          path: '/certificates',
+          icon: Award,
+          badge: 'Verified',
+          badgeClass: 'badge-success',
+        },
+        {
+          label: 'Courses & Curriculum',
+          path: '/courses',
           icon: Package,
         },
         {
-          label: 'Tasks',
-          path: '/tasks',
-          icon: CheckSquare,
-        },
-        {
-          label: 'Reports & Analytics',
-          path: '/reports',
-          icon: BarChart3,
+          label: 'Hiring Partner Companies',
+          path: '/companies',
+          icon: Building2,
         },
       ],
     },
     {
-      title: 'Administration',
+      title: 'ADMINISTRATION',
       items: [
         {
-          label: 'Employee Monitoring',
-          path: '/users',
-          icon: Users,
-        },
-        {
-          label: 'System Settings',
+          label: 'Academy Settings',
           path: '/settings',
           icon: Settings,
         },
@@ -106,12 +140,121 @@ export const Sidebar = ({
     },
   ];
 
+  const techCampusSections = [
+    {
+      title: 'TECH CAMPUS DASHBOARD',
+      items: [
+        {
+          label: 'Campus Command Center',
+          path: '/school/dashboard',
+          icon: School,
+          exact: true,
+        },
+      ],
+    },
+    {
+      title: 'STUDENTS & PARENTS',
+      items: [
+        {
+          label: 'Campus Students Roster',
+          path: '/school/students',
+          icon: GraduationCap,
+        },
+        {
+          label: 'Admissions Workflow',
+          path: '/school/admissions',
+          icon: ClipboardList,
+          badge: 'Pipeline',
+          badgeClass: 'badge-primary',
+        },
+        {
+          label: 'Parents & Guardians',
+          path: '/school/parents',
+          icon: Users,
+        },
+      ],
+    },
+    {
+      title: 'ACADEMICS & TIMETABLE',
+      items: [
+        {
+          label: 'Academic Years',
+          path: '/school/academic-years',
+          icon: Calendar,
+        },
+        {
+          label: 'Classes & Sections',
+          path: '/school/classes',
+          icon: Layers,
+        },
+        {
+          label: 'Campus Subjects',
+          path: '/school/subjects',
+          icon: BookOpen,
+        },
+        {
+          label: 'Timetable Scheduler',
+          path: '/school/timetable',
+          icon: Clock,
+        },
+      ],
+    },
+    {
+      title: 'ASSIGNMENTS & EVALUATIONS',
+      items: [
+
+
+        {
+          label: 'Labs & Assignments',
+          path: '/school/assignments',
+          icon: FileText,
+        },
+        {
+          label: 'Exams & Evaluations',
+          path: '/school/exams',
+          icon: Award,
+        },
+      ],
+    },
+    {
+      title: 'FINANCE & AUDIT',
+      items: [
+        {
+          label: 'Campus Fee Management',
+          path: '/school/fees',
+          icon: IndianRupee,
+        },
+        {
+          label: 'Audit & Security Logs',
+          path: '/school/audit-logs',
+          icon: ShieldCheck,
+        },
+        {
+          label: 'Campus Settings',
+          path: '/settings',
+          icon: Settings,
+        },
+      ],
+    },
+  ];
+
+  const navigationSections = workspace === 'school' ? techCampusSections : techAcademySections;
+
   const isRouteActive = (item) => {
     const current = location.pathname;
     if (item.exact) {
-      return current === item.path || current === '/';
+      return current === item.path;
     }
     return current.startsWith(item.path);
+  };
+
+  const handleWorkspaceToggle = (targetWorkspace) => {
+    setWorkspace(targetWorkspace);
+    if (targetWorkspace === 'school') {
+      navigate('/school/dashboard');
+    } else {
+      navigate('/dashboard');
+    }
   };
 
   return (
@@ -133,80 +276,90 @@ export const Sidebar = ({
       >
         {/* Brand Header */}
         <div className="sidebar-header">
-          <Link to="/dashboard" className="sidebar-brand-link" onClick={onCloseMobile}>
+          <Link to={workspace === 'school' ? "/school/dashboard" : "/dashboard"} className="sidebar-brand-link" onClick={onCloseMobile}>
             <div className="sidebar-logo">
-              <Building2 size={22} />
+              {workspace === 'school' ? <Cpu size={22} /> : <Laptop size={22} />}
             </div>
             {!isCollapsed && (
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <span className="sidebar-brand-name">PL SOFT CRM</span>
-                <span className="sidebar-brand-badge">2026</span>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span className="sidebar-brand-name">
+                  APEX TECHED
+                </span>
+                <span className="text-xs text-slate-400 font-medium">
+                  {workspace === 'school' ? 'Tech Campus' : 'Tech Academy'}
+                </span>
               </div>
             )}
           </Link>
-
-          {/* Close button on mobile */}
-          {isMobileOpen && (
-            <button
-              type="button"
-              className="sidebar-toggle-btn"
-              onClick={onCloseMobile}
-              aria-label="Close sidebar"
-            >
-              <X size={20} />
-            </button>
-          )}
         </div>
 
-        {/* Navigation Links Grouped */}
-        <nav className="sidebar-nav">
-          {navigationSections.map((section) => (
-            <div key={section.title} style={{ marginBottom: '12px' }}>
-              <span className="nav-section-title">{section.title}</span>
-
-              {section.items.map((item) => {
-                const Icon = item.icon;
-                const active = isRouteActive(item);
-
-                return (
-                  <NavLink
-                    key={item.path}
-                    to={item.path}
-                    className={`nav-item ${active ? 'active' : ''}`}
-                    onClick={onCloseMobile}
-                    title={isCollapsed ? item.label : undefined}
-                  >
-                    <Icon size={19} className="nav-icon" />
-                    <span className="nav-label">{item.label}</span>
-                    {item.badge && !isCollapsed && (
-                      <span className={`nav-badge ${item.badgeClass || ''}`}>
-                        {item.badge}
-                      </span>
-                    )}
-                  </NavLink>
-                );
-              })}
-            </div>
-          ))}
-        </nav>
-
-        {/* User Card at bottom */}
-        <div className="sidebar-footer">
-          <div className="sidebar-user-card">
-            <div className="sidebar-user-avatar">
-              {getInitials(user?.name)}
-            </div>
-            <div className="sidebar-user-details">
-              <div className="sidebar-user-name text-truncate">
-                {user?.name || 'User'}
-              </div>
-              <div className="sidebar-user-role">
-                {user?.role === 'Admin' ? 'Administrator' : 'Sales Manager'} • {user?.department || 'Operations'}
-              </div>
+        {/* Workspace Switcher Selector */}
+        {!isCollapsed && (
+          <div className="workspace-switcher-wrap">
+            <div className="workspace-title">Active Workspace</div>
+            <div className="workspace-grid">
+              <button
+                type="button"
+                className={`workspace-btn workspace-btn-institute ${workspace === 'institute' ? 'active' : ''}`}
+                onClick={() => handleWorkspaceToggle('institute')}
+              >
+                <Laptop size={13} />
+                <span>Academy</span>
+              </button>
+              <button
+                type="button"
+                className={`workspace-btn workspace-btn-school ${workspace === 'school' ? 'active' : ''}`}
+                onClick={() => handleWorkspaceToggle('school')}
+              >
+                <Cpu size={13} />
+                <span>Campus</span>
+              </button>
             </div>
           </div>
+        )}
+
+        {/* Navigation Content */}
+        <div className="sidebar-scrollable">
+          {navigationSections.map((section, idx) => (
+            <div key={section.title || idx} className="sidebar-section">
+              {!isCollapsed && section.title && (
+                <div className="sidebar-section-title">{section.title}</div>
+              )}
+              <ul className="sidebar-menu">
+                {section.items.map((item) => {
+                  const Icon = item.icon;
+                  const active = isRouteActive(item);
+
+                  return (
+                    <li key={item.path}>
+                      <NavLink
+                        to={item.path}
+                        className={`sidebar-link ${active ? 'active' : ''}`}
+                        onClick={onCloseMobile}
+                        title={isCollapsed ? item.label : undefined}
+                      >
+                        <Icon size={18} className="sidebar-icon" />
+                        {!isCollapsed && (
+                          <>
+                            <span className="sidebar-label">{item.label}</span>
+                            {item.badge && (
+                              <span className={`sidebar-badge ${item.badgeClass || ''}`}>
+                                {item.badge}
+                              </span>
+                            )}
+                          </>
+                        )}
+                      </NavLink>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
         </div>
       </aside>
     </>
   );
 };
+
+export default Sidebar;

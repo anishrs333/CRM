@@ -3,7 +3,7 @@ import { Modal } from '../modals/Modal';
 import { Button } from '../common/Button';
 import { Badge } from '../common/Badge';
 import { formatCurrency, formatDate, getStatusBadgeVariant } from '../../utils/formatters';
-import { Building2, User, Mail, Phone, DollarSign, Target, Award, ArrowUpRight } from 'lucide-react';
+import { Building2, User, Mail, Phone, IndianRupee, Target, Award, ArrowUpRight } from 'lucide-react';
 
 export const LeadDetailsModal = ({ isOpen, onClose, lead, onEdit, onConvertToCustomer }) => {
   if (!lead) return null;
@@ -104,7 +104,7 @@ export const LeadDetailsModal = ({ isOpen, onClose, lead, onEdit, onConvertToCus
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '0.92rem' }}>
-            <DollarSign size={16} color="var(--text-muted)" />
+            <IndianRupee size={16} color="var(--text-muted)" />
             <span style={{ color: 'var(--text-muted)', width: '130px' }}>Estimated Value:</span>
             <span style={{ fontWeight: 700, color: 'var(--success-solid)' }}>
               {formatCurrency(lead.estimatedValue)}

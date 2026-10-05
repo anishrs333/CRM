@@ -242,8 +242,8 @@ export const UserListPage = () => {
       {/* Header Banner */}
       <div className="users-page-header">
         <div className="users-title-area">
-          <h1>Employee Monitoring & Roster</h1>
-          <p>Track employee assignments, corporate customer representation, and sales pipeline workload.</p>
+          <h1>Faculty & Staff Roster</h1>
+          <p>Manage institute instructors, lab mentors, academic administrators, and staff accounts.</p>
         </div>
 
         <div style={{ display: 'flex', gap: '10px' }}>
@@ -252,7 +252,7 @@ export const UserListPage = () => {
             icon={UserPlus}
             onClick={handleOpenAdd}
           >
-            Add Employee
+            Add Staff Member
           </Button>
         </div>
       </div>
@@ -262,7 +262,7 @@ export const UserListPage = () => {
         <SearchBar
           value={search}
           onChange={handleSearchChange}
-          placeholder="Search employee by name, email, or username..."
+          placeholder="Search faculty or staff by name, email, or username..."
         />
 
         <div className="users-filters-group">

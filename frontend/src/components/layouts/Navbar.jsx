@@ -2,10 +2,10 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useToast } from '../../hooks/useToast';
+import { useWorkspace } from '../../context/WorkspaceContext';
 import { notificationService } from '../../services/notificationService';
 import { userService } from '../../services/userService';
 import { getInitials } from '../../utils/formatters';
-import { UserModal } from '../users/UserModal';
 import { 
   Menu, 
   Search, 
@@ -18,60 +18,24 @@ import {
   PhoneCall,
   Flame,
   FileText,
-  Users,
-  UserPlus
+  Building2,
+  School
 } from 'lucide-react';
 import './Navbar.css';
 
 export const Navbar = ({ onToggleSidebar, isSidebarCollapsed }) => {
   const { user, logout } = useAuth();
   const { showToast } = useToast();
+  const { workspace, setWorkspace } = useWorkspace();
   const navigate = useNavigate();
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [employeeCount, setEmployeeCount] = useState(0);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const menuRef = useRef(null);
   const notifRef = useRef(null);
-
-  const loadEmployeeCount = useCallback(async () => {
-    try {
-      const res = await userService.getUsers({ limit: 100 });
-      const employeeList = (res.data || res.results || []).filter(
-        (u) => u.username !== 'admin' && u.username !== 'crm_admin' && (u.role || '').toLowerCase() !== 'admin'
-      );
-      setEmployeeCount(employeeList.length);
-    } catch (e) {
-      console.error('Failed to load employee count:', e);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadEmployeeCount();
-    const handleEmpCreated = () => loadEmployeeCount();
-    window.addEventListener('employee_created', handleEmpCreated);
-    return () => window.removeEventListener('employee_created', handleEmpCreated);
-  }, [loadEmployeeCount]);
-
-  const handleCreateEmployeeSubmit = async (formData) => {
-    setIsSubmitting(true);
-    try {
-      await userService.createUser(formData);
-      showToast(`🎉 New employee "${formData.name}" created successfully!`, 'success');
-      setIsAddModalOpen(false);
-      loadEmployeeCount();
-      window.dispatchEvent(new CustomEvent('employee_created'));
-    } catch (err) {
-      showToast(err.message || 'Failed to create employee account.', 'error');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   useEffect(() => {
     const loadNotifs = async () => {
@@ -109,7 +73,7 @@ export const Navbar = ({ onToggleSidebar, isSidebarCollapsed }) => {
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      showToast(`Searching for "${searchQuery}" across CRM records...`, 'info', 2500);
+      showToast(`Searching for "${searchQuery}" across platform records...`, 'info', 2500);
       setSearchQuery('');
     }
   };
@@ -167,7 +131,7 @@ export const Navbar = ({ onToggleSidebar, isSidebarCollapsed }) => {
           <input
             type="text"
             className="navbar-search-input"
-            placeholder="Global search leads, customers, quotes, tasks..."
+            placeholder="Search students, courses, receipts..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -175,28 +139,31 @@ export const Navbar = ({ onToggleSidebar, isSidebarCollapsed }) => {
       </div>
 
       <div className="navbar-right">
-        {/* Employees Counter Badge Button */}
-        <button
-          type="button"
-          className="navbar-employees-btn"
-          onClick={() => navigate('/users')}
-          title="View Employee List & Representation Workload"
-        >
-          <Users size={16} />
-          <span className="navbar-emp-label">Employees</span>
-          <span className="navbar-emp-count">{employeeCount}</span>
-        </button>
-
-        {/* Quick Add Employee Button */}
-        <button
-          type="button"
-          className="navbar-add-emp-btn"
-          onClick={() => setIsAddModalOpen(true)}
-          title="Create New Employee Account"
-        >
-          <UserPlus size={15} />
-          <span className="navbar-add-emp-label">Add Employee</span>
-        </button>
+        {/* Workspace Quick Indicator Pill */}
+        <div className="workspace-header-pill">
+          <button
+            type="button"
+            className={`pill-btn ${workspace === 'institute' ? 'active-inst' : ''}`}
+            onClick={() => {
+              setWorkspace('institute');
+              navigate('/dashboard');
+            }}
+          >
+            <Building2 size={13} />
+            <span>Institute</span>
+          </button>
+          <button
+            type="button"
+            className={`pill-btn ${workspace === 'school' ? 'active-sch' : ''}`}
+            onClick={() => {
+              setWorkspace('school');
+              navigate('/school/dashboard');
+            }}
+          >
+            <School size={13} />
+            <span>School</span>
+          </button>
+        </div>
 
         <div className="notif-menu-wrapper" ref={notifRef}>
           <button
@@ -319,14 +286,6 @@ export const Navbar = ({ onToggleSidebar, isSidebarCollapsed }) => {
           )}
         </div>
       </div>
-
-      {/* Quick Add Employee Modal */}
-      <UserModal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        onSubmit={handleCreateEmployeeSubmit}
-        isLoading={isSubmitting}
-      />
     </header>
   );
 };

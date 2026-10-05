@@ -4,7 +4,7 @@ import { FormField } from '../forms/FormField';
 import { Button } from '../common/Button';
 import { userService } from '../../services/userService';
 import { validators } from '../../utils/validators';
-import { TrendingUp, Building2, User, DollarSign, Calendar, Percent } from 'lucide-react';
+import { TrendingUp, Building2, User, IndianRupee, Calendar, Percent } from 'lucide-react';
 import './OpportunityModal.css';
 
 export const OpportunityModal = ({
@@ -192,7 +192,7 @@ export const OpportunityModal = ({
             onChange={handleChange}
             error={errors.dealValue}
             required
-            icon={DollarSign}
+            icon={IndianRupee}
           />
 
           <FormField
